@@ -118,12 +118,12 @@ function Projects3D({ onReturnToSurface }: { onReturnToSurface: () => void }) {
       icon: BookOpenCheck
     },
     {
-      title: "This Portfolio — Ocean Dive",
+      title: "This Portfolio: Ocean Dive",
       description: "The site you're swimming through right now: an interactive underwater portfolio built from scratch.",
       highlights: [
         'Custom GLSL god-ray shader and particle ocean in React Three Fiber',
         'Scroll-driven 3D dive with Lenis smooth scrolling and Motion',
-        'WebAudio-synthesized underwater ambience — zero audio files',
+        'WebAudio-synthesized underwater ambience, zero audio files',
       ],
       tags: ['React 19', 'TypeScript', 'Three.js', 'Tailwind 4'],
       course: "Personal Build",
