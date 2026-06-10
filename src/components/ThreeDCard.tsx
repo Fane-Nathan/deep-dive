@@ -70,9 +70,11 @@ export default function ThreeDCard({ children, id, className = '', maxRotation =
         }}
       />
       
-      {/* Ambient shadow that responds in reverse depth */}
+      {/* Ambient shadow that responds in reverse depth. Kept light at rest:
+          at full strength it blots out content behind the card (e.g. the
+          dive section heading while the card is still fading in). */}
       <div
-        className="absolute inset-0 rounded-2xl bg-black/40 blur-xl pointer-events-none transition-all duration-300 -z-10"
+        className="absolute inset-0 rounded-2xl bg-black/15 blur-xl pointer-events-none transition-all duration-300 -z-10"
         style={{
           transform: isHovered
             ? `translate3d(${-rotation.y * 1}px, ${rotation.x * 1}px, -20px) scale(0.95)`

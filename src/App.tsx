@@ -132,9 +132,9 @@ function Projects3D({ onReturnToSurface }: { onReturnToSurface: () => void }) {
 
   // Dive length scales with the number of cards so the End of the Ocean
   // always surfaces at full scroll.
-  const zOffset = useTransform(scrollYProgress, [0, 1], [0, projects.length * 500 + 500]);
+  const zOffset = useTransform(scrollYProgress, [0, 1], [0, projects.length * 500 + 600]);
 
-  const endZ = useTransform(zOffset, (v) => -400 - (projects.length * 500) + v);
+  const endZ = useTransform(zOffset, (v) => -500 - (projects.length * 500) + v);
   const endOpacity = useTransform(endZ, [-500, -150, 150, 400], [0, 1, 1, 0]);
   const endPointerEvents = useTransform(endZ, (z) => {
     const numericZ = z as number;
@@ -150,7 +150,7 @@ function Projects3D({ onReturnToSurface }: { onReturnToSurface: () => void }) {
         <motion.div 
           style={{ 
             translateZ: useTransform(zOffset, (v) => -200 + v),
-            opacity: useTransform(zOffset, [0, 250, 500], [1, 1, 0])
+            opacity: useTransform(zOffset, [0, 150, 300], [1, 1, 0])
           }}
           className="absolute text-center mt-[-300px]"
         >
@@ -163,7 +163,10 @@ function Projects3D({ onReturnToSurface }: { onReturnToSurface: () => void }) {
         </motion.div>
 
         {projects.map((proj, idx) => {
-          const initialZ = -400 - (idx * 500);
+          // Cards start one step deeper than the intro heading needs to
+          // fully fade (heading gone by v=300; first card visible v>250),
+          // so the ThreeDCard shadow never blots out the section title.
+          const initialZ = -500 - (idx * 500);
           const currentZ = useTransform(zOffset, (v) => initialZ + v);
           const opacity = useTransform(currentZ, [-250, -50, 200, 450], [0, 1, 1, 0]);
           return (
