@@ -7,6 +7,7 @@ import { Canvas } from '@react-three/fiber';
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useTime } from 'motion/react';
 import { Github, Linkedin, Mail, Gamepad2, MessageSquareText, BookOpenCheck, Waves } from 'lucide-react';
+import { Analytics } from '@vercel/analytics/react';
 import ThreeDCard from './components/ThreeDCard';
 import { Scene } from './components/Scene';
 import { ProjectCard } from './components/ProjectCard';
@@ -317,6 +318,7 @@ export default function App() {
              <Projects3D onReturnToSurface={returnToSurface} />
           </div>
       </div>
+      <Analytics />
     </div>
   );
 }
