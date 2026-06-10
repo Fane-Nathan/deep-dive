@@ -1,20 +1,51 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# 🌊 Deep Dive Portfolio
 
-# Run and deploy your AI Studio app
+An immersive, 3D underwater-themed portfolio showcasing computer science projects, academic telemetry, and photography. Built with React, React Three Fiber (R3F), Vite, Three.js, and Tailwind CSS.
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/d2bc5032-3fd9-43e0-a1ae-7820e1695a61
+## ✨ Features
 
-## Run Locally
+- **Immersive 3D Environment**: A real-time WebGL underwater scene featuring a floating submarine, dynamic caustics, and bubble particles.
+- **Volumetric SVG Sunrays**: Smooth, high-performance caustics and light rays that ripple and bend, creating a realistic underwater feel.
+- **Depth Telemetry**: A custom sidebar interface tracking your scroll position and simulated water depth as you dive through sections.
+- **Academic Profile**: Grid showcasing coursework, academic history, and certificates.
+- **Surface Interval**: Photography showcase highlighting hobbies between dives.
+- **Sound Design**: Toggleable ambient underwater soundscape.
 
-**Prerequisites:**  Node.js
+---
 
+## 🛠️ Tech Stack
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+- **Framework**: [React 19](https://react.dev/) + [Vite](https://vite.dev/)
+- **3D Graphics**: [Three.js](https://threejs.org/) + [React Three Fiber](https://r3f.docs.pmnd.rs/) + [Drei](https://github.com/pmndrs/drei)
+- **Animations**: [Motion](https://motion.dev/) (formerly Framer Motion)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Make sure you have [Node.js](https://nodejs.org/) installed.
+
+### Setup
+
+1. **Install Dependencies**:
+   ```bash
+   npm install
+   ```
+
+2. **Run Dev Server**:
+   ```bash
+   npm run dev
+   ```
+   Open your browser and navigate to `http://localhost:3000`.
+
+3. **Build for Production**:
+   ```bash
+   npm run build
+   ```
+   The static build files will be output to the `/dist` directory.
