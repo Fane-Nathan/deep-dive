@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+html.lenis, html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Click bubbles */
+.bubble {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.55), rgba(34, 211, 238, 0.18) 55%, rgba(34, 211, 238, 0.05));
+  border: 1px solid rgba(165, 243, 252, 0.35);
+  opacity: 0;
+  animation-name: bubbleRise;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+  will-change: transform, opacity;
+}
+
+@keyframes bubbleRise {
+  0% {
+    transform: translate(0, 0) scale(0.6);
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(var(--dx, 0px), -160px) scale(1.15);
+    opacity: 0;
+  }
+}
+
+/* Idle submarine easter egg */
+.submarine-track {
+  animation: subSwim 18s linear forwards;
+  will-change: transform;
+}
+
+@keyframes subSwim {
+  from {
+    transform: translateX(-16vw);
+  }
+  to {
+    transform: translateX(112vw);
+  }
+}
+
+.submarine-bob {
+  animation: subBob 3.2s ease-in-out infinite;
+}
+
+@keyframes subBob {
+  0%,
+  100% {
+    transform: translateY(-7px) rotate(-1.5deg);
+  }
+  50% {
+    transform: translateY(7px) rotate(1.5deg);
+  }
+}
+
+
+

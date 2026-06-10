@@ -1,0 +1,6 @@
+{
+  "name": "BINUS CS Portfolio",
+  "description": "A highly polished, interactive portfolio for a BINUS University Computer Science student, showcasing academic course works, the 3+1 enrichment program, projects, and BINUSIAN core skills.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
