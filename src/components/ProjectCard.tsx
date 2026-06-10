@@ -2,7 +2,7 @@ import { motion } from 'motion/react';
 import { ExternalLink, Github, ChevronRight } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
-type Accent = 'cyan' | 'violet' | 'emerald';
+type Accent = 'cyan' | 'violet' | 'emerald' | 'amber';
 
 // Static class strings per accent so Tailwind's JIT can see them.
 const ACCENTS: Record<Accent, {
