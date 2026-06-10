@@ -92,7 +92,7 @@ export function ProjectCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 0.6, type: "spring", stiffness: 100, delay }}
-      className={`group relative rounded-3xl bg-slate-900/40 border border-slate-700/50 pt-7 px-8 pb-5 flex flex-col h-full overflow-hidden backdrop-blur-xl shadow-lg transition-[border-color,background-color,box-shadow] duration-300 ${a.cardHover}`}
+      className={`group relative rounded-3xl bg-slate-900/40 border border-slate-700/50 pt-5 px-5 pb-4 md:pt-7 md:px-8 md:pb-5 flex flex-col h-full overflow-hidden backdrop-blur-xl shadow-lg transition-[border-color,background-color,box-shadow] duration-300 ${a.cardHover}`}
     >
       <div className={`absolute inset-0 bg-gradient-to-br ${a.overlay} via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
       <div className={`absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r ${a.bar} transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left`} />
@@ -129,7 +129,7 @@ export function ProjectCard({
           )}
         </div>
 
-        <h3 className={`text-2xl font-bold text-slate-100 mb-3 transition-colors ${a.titleHover}`}>{title}</h3>
+        <h3 className={`text-xl md:text-2xl font-bold text-slate-100 mb-3 transition-colors ${a.titleHover}`}>{title}</h3>
         <p className="text-slate-400 text-sm mb-5 leading-relaxed">{description}</p>
 
         {/* Concrete highlights fill the card body */}

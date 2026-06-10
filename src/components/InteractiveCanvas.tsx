@@ -67,6 +67,26 @@ export default function InteractiveCanvas() {
   const [zoom, setZoom] = useState(1.1);
   const dragStart = useRef({ x: 0, y: 0 });
   const mousePos = useRef({ x: 0, y: 0 });
+  // Canvas size in CSS pixels; the drawing buffer is kept in sync with the
+  // element's real on-screen size so the graph isn't squeezed on phones.
+  const sizeRef = useRef({ w: 650, h: 320 });
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const resize = () => {
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      sizeRef.current = { w: rect.width, h: rect.height };
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+    };
+    resize();
+    const ro = new ResizeObserver(resize);
+    ro.observe(canvas);
+    return () => ro.disconnect();
+  }, []);
 
   // Handle Rotation auto deceleration
   useEffect(() => {
@@ -85,6 +105,10 @@ export default function InteractiveCanvas() {
     return () => cancelAnimationFrame(timer);
   }, [isDragging, rotation]);
 
+  // Shrinks the layout so the whole graph stays inside small canvases
+  // (phones) instead of overflowing; never enlarges beyond the design size.
+  const fitScale = () => Math.min(sizeRef.current.w / 650, sizeRef.current.h / 340, 1);
+
   const projectNode = (node: Node3D, cx: number, cy: number, d: number) => {
     // Rotation calculations
     // Around Y-axis
@@ -101,7 +125,7 @@ export default function InteractiveCanvas() {
 
     // Perspective conversion
     const scale = d / (d + z2);
-    const finalZoom = zoom * scale;
+    const finalZoom = zoom * fitScale() * scale;
     const px = cx + x1 * finalZoom;
     const py = cy + y2 * finalZoom;
 
@@ -124,21 +148,24 @@ export default function InteractiveCanvas() {
     let animId: number;
 
     const render = () => {
-      // Clear canvas with deep technical background match
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      const width = canvas.width;
-      const height = canvas.height;
+      // Draw in CSS pixel space; the buffer is scaled by devicePixelRatio.
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const { w: width, h: height } = sizeRef.current;
+      ctx.clearRect(0, 0, width, height);
+
       const cx = width / 2;
       const cy = height / 2;
       const d = 260; // Perspective base depth
-      
+      const ringZoom = zoom * fitScale();
+
       // Guide rings in 3D (Simulating orbits)
       ctx.strokeStyle = '#ffffff08';
       ctx.lineWidth = 1;
       for (let i = 1; i <= 3; i++) {
         ctx.beginPath();
-        ctx.ellipse(cx, cy, 100 * i * zoom, 50 * i * zoom, angles.x, 0, 2 * Math.PI);
+        ctx.ellipse(cx, cy, 100 * i * ringZoom, 50 * i * ringZoom, angles.x, 0, 2 * Math.PI);
         ctx.stroke();
       }
 
@@ -241,19 +268,20 @@ export default function InteractiveCanvas() {
     };
   }, [angles, zoom, selectedNode, hoveredNode]);
 
-  // Canvas Handlers
-  const handleMouseDown = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  // Canvas Handlers — pointer events so touch users can rotate and tap too
+  const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     setIsDragging(true);
     const canvas = canvasRef.current;
     if (!canvas) return;
+    canvas.setPointerCapture(e.pointerId);
     const rect = canvas.getBoundingClientRect();
-    dragStart.current = {
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top
-    };
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    dragStart.current = { x, y };
+    mousePos.current = { x, y };
   };
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLCanvasElement>) => {
+  const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const rect = canvas.getBoundingClientRect();
@@ -280,21 +308,41 @@ export default function InteractiveCanvas() {
     dragStart.current = { x, y };
   };
 
-  const handleMouseUp = () => {
+  const handlePointerUp = () => {
     setIsDragging(false);
   };
 
-  const handleCanvasClick = () => {
-    if (hoveredNode) {
-      setSelectedNode(hoveredNode);
-    }
+  const handleCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
+    // Hit-test directly from the click position instead of relying on the
+    // hover state, which lags one animation frame behind taps on touch.
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const cx = sizeRef.current.w / 2;
+    const cy = sizeRef.current.h / 2;
+
+    let nearest: Node3D | null = null;
+    let minDist = 24;
+    NODES_DATA.forEach(node => {
+      const proj = projectNode(node, cx, cy, 260);
+      if (!proj.visible) return;
+      const dist = Math.hypot(x - proj.px, y - proj.py);
+      if (dist < proj.size + 10 && dist < minDist) {
+        nearest = node;
+        minDist = dist;
+      }
+    });
+    if (nearest) setSelectedNode(nearest);
   };
 
   return (
     <div id="interactive-grid-matrix" className="w-full flex flex-col xl:flex-row gap-6 max-w-7xl mx-auto p-4 select-none">
       
       {/* 3D Scene Viewport */}
-      <div className="flex-1 relative bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl overflow-hidden aspect-video xl:aspect-auto xl:h-[460px] flex flex-col justify-between">
+      {/* Taller box on phones — 16:9 leaves the graph unreadably small */}
+      <div className="flex-1 relative bg-slate-900/60 backdrop-blur-xl border border-slate-800 rounded-3xl overflow-hidden aspect-square sm:aspect-video xl:aspect-auto xl:h-[460px] flex flex-col justify-between">
         
         {/* Top telemetry bar */}
         <div className="p-4 flex items-center justify-between border-b border-rose-500/10 bg-slate-950/40 z-10">
@@ -317,14 +365,13 @@ export default function InteractiveCanvas() {
         {/* The Live Canvas */}
         <canvas
           ref={canvasRef}
-          width={650}
-          height={320}
-          onMouseDown={handleMouseDown}
-          onMouseMove={handleMouseMove}
-          onMouseUp={handleMouseUp}
-          onMouseLeave={handleMouseUp}
+          onPointerDown={handlePointerDown}
+          onPointerMove={handlePointerMove}
+          onPointerUp={handlePointerUp}
+          onPointerLeave={handlePointerUp}
+          onPointerCancel={handlePointerUp}
           onClick={handleCanvasClick}
-          className="w-full h-full cursor-grab active:cursor-grabbing hover:opacity-100 transition-opacity"
+          className="w-full flex-1 min-h-0 touch-none cursor-grab active:cursor-grabbing"
         />
 
         {/* Floating Instruction overlay */}

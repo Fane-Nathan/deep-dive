@@ -56,7 +56,10 @@ function ProjectItem({ proj, currentZ, opacity, idx }: any) {
       className="absolute w-full max-w-3xl px-6"
       style={{ translateZ: currentZ, opacity, pointerEvents }}
     >
-      <motion.div style={{ y: yBob, x: xBob }} className="w-full h-[450px]">
+      {/* Fixed height only from md up; on phones the card grows with its
+          content, otherwise the footer links overflow the 450px box and get
+          clipped by the card's overflow-hidden. */}
+      <motion.div style={{ y: yBob, x: xBob }} className="w-full md:h-[450px]">
         <ThreeDCard id={`dive-card-${idx}`} maxRotation={6} className="h-full">
           <ProjectCard {...proj} station={idx + 1} delay={0} />
         </ThreeDCard>
