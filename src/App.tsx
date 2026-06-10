@@ -6,7 +6,7 @@
 import { Canvas } from '@react-three/fiber';
 import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useTime } from 'motion/react';
-import { Github, Linkedin, Mail, Gamepad2, MessageSquareText, BookOpenCheck } from 'lucide-react';
+import { Github, Linkedin, Mail, Gamepad2, MessageSquareText, BookOpenCheck, Waves } from 'lucide-react';
 import ThreeDCard from './components/ThreeDCard';
 import { Scene } from './components/Scene';
 import { ProjectCard } from './components/ProjectCard';
@@ -72,8 +72,6 @@ function Projects3D({ onReturnToSurface }: { onReturnToSurface: () => void }) {
     offset: ["start start", "end end"]
   });
 
-  const zOffset = useTransform(scrollYProgress, [0, 1], [0, 2000]);
-
   const projects = [
     {
       title: "TMRL: RL² Transformer REDQ",
@@ -115,8 +113,26 @@ function Projects3D({ onReturnToSurface }: { onReturnToSurface: () => void }) {
       liveUrl: "https://research-assistant-docs.streamlit.app/",
       accent: 'emerald' as const,
       icon: BookOpenCheck
+    },
+    {
+      title: "This Portfolio — Ocean Dive",
+      description: "The site you're swimming through right now: an interactive underwater portfolio built from scratch.",
+      highlights: [
+        'Custom GLSL god-ray shader and particle ocean in React Three Fiber',
+        'Scroll-driven 3D dive with Lenis smooth scrolling and Motion',
+        'WebAudio-synthesized underwater ambience — zero audio files',
+      ],
+      tags: ['React 19', 'TypeScript', 'Three.js', 'Tailwind 4'],
+      course: "Personal Build",
+      githubUrl: "https://github.com/Fane-Nathan/deep-dive",
+      accent: 'amber' as const,
+      icon: Waves
     }
   ];
+
+  // Dive length scales with the number of cards so the End of the Ocean
+  // always surfaces at full scroll.
+  const zOffset = useTransform(scrollYProgress, [0, 1], [0, projects.length * 500 + 500]);
 
   const endZ = useTransform(zOffset, (v) => -400 - (projects.length * 500) + v);
   const endOpacity = useTransform(endZ, [-500, -150, 150, 400], [0, 1, 1, 0]);
@@ -126,7 +142,7 @@ function Projects3D({ onReturnToSurface }: { onReturnToSurface: () => void }) {
   });
 
   return (
-    <div ref={sectionRef} id="dive-section" className="relative w-full h-[250vh]">
+    <div ref={sectionRef} id="dive-section" className="relative w-full" style={{ height: `${100 + projects.length * 50}vh` }}>
       <div 
         className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden pointer-events-none"
         style={{ perspective: 1200 }}

@@ -45,6 +45,16 @@ const ACCENTS: Record<Accent, {
     bullet: 'text-emerald-400',
     overlay: 'from-emerald-500/5',
   },
+  amber: {
+    iconBox: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+    badge: 'text-amber-300 bg-amber-500/10 border-amber-500/20',
+    badgeDot: 'bg-amber-400',
+    titleHover: 'group-hover:text-amber-300',
+    cardHover: 'hover:border-amber-500/50 hover:shadow-amber-500/10',
+    bar: 'from-amber-500 via-orange-400 to-rose-500',
+    bullet: 'text-amber-400',
+    overlay: 'from-amber-500/5',
+  },
 };
 
 interface ProjectCardProps {
